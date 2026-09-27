@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prototipo — Sistema Veterinario</title>
+<style>
+  :root{
+    --bg:#f6f3ec; --panel:#fff; --border:#e2ddd0; --text:#26302a; --muted:#7a7267;
+    --accent:#1f4d3d; --accent2:#c9a24b; --accent-bg:#e9f1ec; --warn:#a8641b; --warn-bg:#f8ecd8;
+    --danger:#a13a2f; --danger-bg:#f6e4e0;
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121613; --panel:#1b201c; --border:#2d332e; --text:#e9ede9; --muted:#9aa39a;
+      --accent:#5fae8c; --accent2:#d9b862; --accent-bg:#1c2a22; --warn:#d9a154; --warn-bg:#332815;
+      --danger:#e18a7c; --danger-bg:#331f1c;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121613; --panel:#1b201c; --border:#2d332e; --text:#e9ede9; --muted:#9aa39a;
+    --accent:#5fae8c; --accent2:#d9b862; --accent-bg:#1c2a22; --warn:#d9a154; --warn-bg:#332815;
+    --danger:#e18a7c; --danger-bg:#331f1c;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: env(safe-area-inset-top,0px); height:100%;}
+  body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;}
+  header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--accent);color:#fff;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.12);}
+  .header-inner{max-width:1100px;margin:0 auto;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;}
+  .brand{font-size:11px;color:var(--accent2);font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+  nav{display:flex;gap:6px;overflow-x:auto;}
+  nav button{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;padding:7px 14px;border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer;}
+  nav button.active{background:var(--accent2);border-color:var(--accent2);color:#1f2a22;font-weight:700;}
+  main{max-width:1100px;margin:0 auto;padding:26px 20px 50px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(20,30,20,.05);}
+  .field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;letter-spacing:.02em;}
+  .field input, .field select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;margin-bottom:12px;}
+  .btn{padding:12px 22px;border:none;border-radius:24px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.02em;}
+  .btn.block{width:100%;}
+  .btn.secondary{background:transparent;border:1.5px solid var(--accent);color:var(--accent);}
+  h2{font-size:18px;margin:0 0 14px;color:var(--accent);font-weight:700;}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .muted{color:var(--muted);font-size:12.5px;}
+  .pill{font-size:10.5px;padding:4px 10px;border-radius:20px;font-weight:700;white-space:nowrap;letter-spacing:.02em;}
+  .pill.pend{background:var(--warn-bg);color:var(--warn);}
+  .pill.curso{background:var(--accent-bg);color:var(--accent);}
+  .pill.done{background:var(--danger-bg);color:var(--danger);opacity:.7;}
+  .turno-item{border-bottom:1px solid var(--border);padding:12px 0;}
+  .turno-item:last-child{border-bottom:none;}
+  textarea{width:100%;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);padding:10px;font-size:14px;min-height:70px;font-family:inherit;}
+
+  /* --- responsive layouts --- */
+  .grid-2{display:grid;grid-template-columns:1fr;gap:16px;}
+  .center-card{max-width:380px;margin:40px auto 0;}
+  @media (min-width:760px){
+    .grid-2{grid-template-columns:1.3fr 1fr;align-items:start;}
+    main{padding:40px 32px 60px;}
+    .header-inner{padding:18px 32px;}
+    .card{padding:24px;}
+  }
+  @media (min-width:1020px){
+    main{padding:48px 40px 70px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">Sistema Veterinario — Prototipo</div>
+    <nav id="tabs"></nav>
+  </div>
+</header>
+<main>
+
+  <!-- LOGIN -->
+  <section class="screen" data-screen="login">
+    <div class="card center-card">
+      <h2>Ingreso de empleado</h2>
+      <div class="field">
+        <label>Usuario</label>
+        <input placeholder="usuario@veterinaria.com">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <button class="btn block">Ingresar</button>
+    </div>
+    <p class="muted center-card">Acceso restringido a personal de la veterinaria (veterinarios y recepción).</p>
+  </section>
+
+  <!-- TURNOS -->
+  <section class="screen" data-screen="turnos">
+    <div class="row" style="margin-bottom:14px;">
+      <h2 style="margin:0;">Turnos de hoy</h2>
+      <button class="btn">+ Nuevo turno</button>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="turno-item">
+          <div class="row"><b>10:00 — Rocky (Canino)</b><span class="pill pend">Pendiente</span></div>
+          <div class="muted">Dueño: Marcos Díaz — Control post-operatorio</div>
+        </div>
+        <div class="turno-item">
+          <div class="row"><b>10:30 — Michi (Felino)</b><span class="pill curso">En curso</span></div>
+          <div class="muted">Dueño: Laura Ponce — Vacunación anual</div>
+        </div>
+        <div class="turno-item">
+          <div class="row"><b>11:15 — Toby (Canino)</b><span class="pill done">Atendido</span></div>
+          <div class="muted">Dueño: Julián Reyes — Consulta general</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Filtros</h2>
+        <div class="field">
+          <label>Estado</label>
+          <select><option>Todos</option><option>Pendiente</option><option>En curso</option><option>Atendido</option></select>
+        </div>
+        <div class="field">
+          <label>Veterinario</label>
+          <select><option>Todos</option><option>Dra. Fernández</option><option>Dr. Suárez</option></select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FICHA CLIENTE/MASCOTA -->
+  <section class="screen" data-screen="ficha">
+    <h2>Ficha de cliente y mascota</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h2>Mascota</h2>
+        <div class="field"><label>Nombre / especie</label><input value="Rocky — Canino, Labrador, 4 años"></div>
+        <div class="field"><label>Historial reciente</label>
+          <textarea readonly>08/09 — Control de rutina, sin novedades.
+22/09 — Cirugía menor (extracción), reposo 7 días.</textarea>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Cliente responsable</h2>
+        <div class="field"><label>Nombre completo</label><input value="Marcos Díaz"></div>
+        <div class="field"><label>Contacto</label><input value="marcos.diaz@mail.com — 11-2233-4455"></div>
+        <button class="btn secondary block">Ver otras mascotas del cliente</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGNOSTICO -->
+  <section class="screen" data-screen="diagnostico">
+    <div class="card" style="max-width:640px;">
+      <h2>Registro de diagnóstico</h2>
+      <p class="muted">Turno: Rocky — 10:00 hs — Control post-operatorio</p>
+      <div class="field"><label>Estado del turno</label>
+        <select><option>Pendiente</option><option selected>En curso</option><option>Atendido</option></select>
+      </div>
+      <div class="field"><label>Observaciones del veterinario</label>
+        <textarea placeholder="Herida cicatrizando correctamente, se retiran puntos..."></textarea>
+      </div>
+      <div class="field"><label>Próximo control</label><input type="date"></div>
+      <button class="btn">Guardar diagnóstico</button>
+    </div>
+  </section>
+
+</main>
+<script>
+  const screens = [
+    {id:'login', label:'Login'},
+    {id:'turnos', label:'Turnos'},
+    {id:'ficha', label:'Ficha cliente/mascota'},
+    {id:'diagnostico', label:'Diagnóstico'}
+  ];
+  const tabs = document.getElementById('tabs');
+  screens.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.textContent = s.label;
+    if(i===0) b.classList.add('active');
+    b.onclick = ()=>{
+      document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      document.querySelector(`[data-screen="${s.id}"]`).classList.add('active');
+    };
+    tabs.appendChild(b);
+  });
+  document.querySelector(`[data-screen="login"]`).classList.add('active');
+</script>
+</body>
+</html>
